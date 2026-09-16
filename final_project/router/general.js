@@ -85,40 +85,40 @@ module.exports.general = public_users;
 
 /* ---------------------------------------------------------------------
    Task 11 — retrieve all books and their details based on author, title
-   and ISBN using Axios, implemented both with Promise callbacks and
-   with async/await.
+   and ISBN using Axios, implemented with async/await and try/catch.
+   Author and title values are URL-encoded so that values containing
+   spaces or special characters (e.g. "Jane Austen", "Fairy tales")
+   are sent correctly.
 --------------------------------------------------------------------- */
 
 const BASE_URL = "http://localhost:5000";
 
-// Get all books — Promise callback style
-function getAllBooks() {
-  return axios.get(`${BASE_URL}/`)
-    .then((response) => {
-      console.log("All books:", response.data);
-      return response.data;
-    })
-    .catch((error) => {
-      console.log("Error fetching all books:", error.message);
-    });
+// Get all books
+async function getAllBooks() {
+  try {
+    const response = await axios.get(`${BASE_URL}/`);
+    console.log("All books:", response.data);
+    return response.data;
+  } catch (error) {
+    console.log("Error fetching all books:", error.message);
+  }
 }
 
-// Search by ISBN — Promise callback style
-function getBookByISBN(isbn) {
-  return axios.get(`${BASE_URL}/isbn/${isbn}`)
-    .then((response) => {
-      console.log(`Book with ISBN ${isbn}:`, response.data);
-      return response.data;
-    })
-    .catch((error) => {
-      console.log(`Error fetching book with ISBN ${isbn}:`, error.message);
-    });
+// Search by ISBN
+async function getBookByISBN(isbn) {
+  try {
+    const response = await axios.get(`${BASE_URL}/isbn/${encodeURIComponent(isbn)}`);
+    console.log(`Book with ISBN ${isbn}:`, response.data);
+    return response.data;
+  } catch (error) {
+    console.log(`Error fetching book with ISBN ${isbn}:`, error.message);
+  }
 }
 
-// Search by Author — async/await style
+// Search by Author
 async function getBookByAuthor(author) {
   try {
-    const response = await axios.get(`${BASE_URL}/author/${author}`);
+    const response = await axios.get(`${BASE_URL}/author/${encodeURIComponent(author)}`);
     console.log(`Books by ${author}:`, response.data);
     return response.data;
   } catch (error) {
@@ -126,10 +126,10 @@ async function getBookByAuthor(author) {
   }
 }
 
-// Search by Title — async/await style
+// Search by Title
 async function getBookByTitle(title) {
   try {
-    const response = await axios.get(`${BASE_URL}/title/${title}`);
+    const response = await axios.get(`${BASE_URL}/title/${encodeURIComponent(title)}`);
     console.log(`Books with title ${title}:`, response.data);
     return response.data;
   } catch (error) {
